@@ -54,6 +54,7 @@ namespace SteamAccountHelper
                 }
                 string accountConfigPath = System.IO.Path.Combine(steamPath, "config", "loginusers.vdf");
                 LstAccount.Items.Clear();
+                LstAccount.Items.Add(new SteamAccountItem() { AccountName = "使用其他账号登录" });
                 SteamAccountItem accountItem = new SteamAccountItem();
                 using (FileStream fs = new FileStream(accountConfigPath, FileMode.Open, FileAccess.Read))
                 {
@@ -77,12 +78,6 @@ namespace SteamAccountHelper
                         }
 
                     }
-                }
-
-                if (LstAccount.Items.Count < 1)
-                {
-                    MessageBox.Show("未检测到可自动登录的账号");
-                    this.Close();
                 }
 
             }
@@ -128,7 +123,14 @@ namespace SteamAccountHelper
                         string steamExe = Convert.ToString(steamKey.GetValue("SteamExe"));
                         if (sender is ListView lstView && lstView.SelectedValue is SteamAccountItem accountItem)
                         {
-                            steamKey.SetValue("AutoLoginUser", accountItem.AccountName);
+                            if(lstView.SelectedIndex==0)
+                            {
+                                steamKey.SetValue("AutoLoginUser", "");
+                            }
+                            else
+                            {
+                                steamKey.SetValue("AutoLoginUser", accountItem.AccountName);
+                            }
                         }
                         Process.Start(steamExe);
                         this.Close();
