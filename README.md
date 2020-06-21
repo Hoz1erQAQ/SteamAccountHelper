@@ -5,6 +5,9 @@ Steam账号快捷选择，自动登录
 打开本程序后直接显示出全部可自动登录的账号，双击即可以所选账号自动打开Steam
 如果没有看到期望的账号，请先以常规方式启动Steam，以该账号登录，并确保将该账号设置为可自动登录。
 
+主界面示例:  
+![主界面示例](https://github.com/Hoz1er/SteamAccountHelper/blob/img/Main.png)
+
 ## User Support
 [Eamil](mailto:2510858783@qq.com)
 
