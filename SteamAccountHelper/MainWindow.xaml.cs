@@ -45,12 +45,14 @@ namespace SteamAccountHelper
                 {
                     MessageBox.Show("读取Steam注册表信息失败");
                     this.Close();
+                    return;
                 }
                 string steamPath = Convert.ToString(steamKey.GetValue("SteamPath"));
                 if (string.IsNullOrWhiteSpace(steamPath))
                 {
                     MessageBox.Show("读取Steam路径信息失败");
                     this.Close();
+                    return;
                 }
                 string accountConfigPath = System.IO.Path.Combine(steamPath, "config", "loginusers.vdf");
                 LstAccount.Items.Clear();
@@ -96,14 +98,21 @@ namespace SteamAccountHelper
 
         private RegistryKey GetRegistryKey(RegistryKey parentKey, string[] subKeys, bool writable = false)
         {
-            if (parentKey != null && subKeys.Length > 0 && parentKey.GetSubKeyNames().Contains(subKeys[0]))
+            if (parentKey != null && subKeys.Length > 0)
             {
-                RegistryKey childKey = parentKey.OpenSubKey(subKeys[0], writable);
-                if (childKey == null || subKeys.Length < 2)
+                string[] arrCurrentSubKeyNames = parentKey.GetSubKeyNames();
+                for (int i = 0; i < arrCurrentSubKeyNames.Length; i++)
                 {
-                    return childKey;
+                    if(string.Compare(arrCurrentSubKeyNames[i], subKeys[0], true) == 0)
+                    {
+                        RegistryKey childKey = parentKey.OpenSubKey(arrCurrentSubKeyNames[i], writable);
+                        if (childKey == null || subKeys.Length < 2)
+                        {
+                            return childKey;
+                        }
+                        return GetRegistryKey(childKey, subKeys.Skip(1).ToArray(), writable);
+                    }
                 }
-                return GetRegistryKey(childKey, subKeys.Skip(1).ToArray(), writable);
             }
             return null;
         }
