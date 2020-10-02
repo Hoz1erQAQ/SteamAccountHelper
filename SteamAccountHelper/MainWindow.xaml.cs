@@ -92,7 +92,7 @@ namespace SteamAccountHelper
 
         private string GetValue(string curLine, string startStr)
         {
-            string str= curLine.Substring(startStr.Length).Trim();
+            string str = curLine.Substring(startStr.Length).Trim();
             return str.Substring(1, str.Length - 2);//去除包裹账号的左右双引号
         }
 
@@ -103,7 +103,7 @@ namespace SteamAccountHelper
                 string[] arrCurrentSubKeyNames = parentKey.GetSubKeyNames();
                 for (int i = 0; i < arrCurrentSubKeyNames.Length; i++)
                 {
-                    if(string.Compare(arrCurrentSubKeyNames[i], subKeys[0], true) == 0)
+                    if (string.Compare(arrCurrentSubKeyNames[i], subKeys[0], true) == 0)
                     {
                         RegistryKey childKey = parentKey.OpenSubKey(arrCurrentSubKeyNames[i], writable);
                         if (childKey == null || subKeys.Length < 2)
@@ -119,36 +119,60 @@ namespace SteamAccountHelper
 
         private void LstAccount_MouseDoubleClick(object sender, MouseButtonEventArgs e)
         {
+            string account = string.Empty;
             if (e.LeftButton == MouseButtonState.Pressed)
             {
-                if (Process.GetProcessesByName("steam").Length > 0)
+                Process[] arrSteamProcess = Process.GetProcessesByName("steam");
+                if (arrSteamProcess.Length > 0)
                 {
-                    MessageBox.Show("steam正在运行中");
-                }
-                else
-                {
-                    try
+                    if (chkAutoStop.IsChecked != true)
                     {
-                        string steamExe = Convert.ToString(steamKey.GetValue("SteamExe"));
-                        if (sender is ListView lstView && lstView.SelectedValue is SteamAccountItem accountItem)
+                        MessageBox.Show("steam正在运行中");
+                        return;
+                    }
+                    else
+                    {
+                        try
                         {
-                            if(lstView.SelectedIndex==0)
+                            foreach (Process item in arrSteamProcess)
                             {
-                                steamKey.SetValue("AutoLoginUser", "");
-                            }
-                            else
-                            {
-                                steamKey.SetValue("AutoLoginUser", accountItem.AccountName);
+                                item.Kill();
                             }
                         }
-                        Process.Start(steamExe);
-                        this.Close();
-                    }
-                    catch (Exception ex)
-                    {
-                        MessageBox.Show(ex.Message);
+                        catch (Exception ex)
+                        {
+                            MessageBox.Show("尝试关闭Steam进程时出现异常：" + ex.Message);
+                            return;
+                        }
+                        
                     }
                 }
+
+                if (sender is ListView lstView && lstView.SelectedValue is SteamAccountItem accountItem)
+                {
+                    if (lstView.SelectedIndex != 0)
+                    {
+                        account = accountItem.AccountName;
+                    }
+                }
+                CallSteam(account);
+            }
+
+        }
+
+        private void CallSteam(string account)
+        {
+            try
+            {
+                string steamExe = Convert.ToString(steamKey.GetValue("SteamExe"));
+                steamKey.SetValue("AutoLoginUser", account);
+
+                Process.Start(steamExe);
+                this.Close();
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message);
             }
         }
     }

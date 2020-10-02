@@ -13,9 +13,11 @@
         >
     <Grid>
         <Grid.RowDefinitions>
+            <RowDefinition Height="20" />
             <RowDefinition Height="1*" />
         </Grid.RowDefinitions>
-        <ListView x:Name="LstAccount" SelectionMode="Single" ItemsSource="{Binding}" MouseDoubleClick="LstAccount_MouseDoubleClick">
+        <CheckBox x:Name="chkAutoStop" Grid.Row="0" ClickMode="Press" IsChecked="True" >自动退出当前Steam</CheckBox>
+        <ListView x:Name="LstAccount" Grid.Row="1" SelectionMode="Single" ItemsSource="{Binding}" MouseDoubleClick="LstAccount_MouseDoubleClick">
             <ListView.ItemTemplate>
                 <DataTemplate>
                     <Label Content="{Binding Path=AccountName}" Height="26" Padding="0,5,0,5" />
