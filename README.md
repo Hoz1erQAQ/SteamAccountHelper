@@ -18,7 +18,7 @@ Steam账号快捷选择，自动登录
 ![主界面示例](https://github.com/Hoz1er/SteamAccountHelper/blob/img/Main.png)
 
 ## User Support
-[Eamil](mailto:2510858783@qq.com)
+[Email](mailto:2510858783@qq.com)
 
 ## Related Efforts
   * [Steam账户快速切换](https://www.dogfight360.com/blog/800/) By [羽翼城](https://www.dogfight360.com/blog/)
